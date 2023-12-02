@@ -1,12 +1,12 @@
 import streamlit as st
 from tensorflow import keras
-from keras.preprocessing.text import Tokenizer as KerasTokenizer
+from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 import numpy as np
 from bs4 import BeautifulSoup
 from requests import get
 from sumy.parsers.plaintext import PlaintextParser
-from sumy.nlp.tokenizers import Tokenizer as SumyTokenizer
+from sumy.nlp.tokenizers import Tokenizer
 from sumy.summarizers.text_rank import TextRankSummarizer
 from sumy.summarizers.lex_rank import LexRankSummarizer
 from sumy.summarizers.lsa import LsaSummarizer
@@ -21,8 +21,8 @@ model_french = keras.models.load_model("best_model_french.h5")
 model_english = keras.models.load_model("best_model.h5")
 
 # Chargement des Tokenizers avec spécification de la langue
-tokenizer_french = KerasTokenizer(language='french')
-tokenizer_english = KerasTokenizer(language='english')
+tokenizer_french = Tokenizer(language='french')
+tokenizer_english = Tokenizer(language='english')
 
 # Définir max_sequence_length en fonction de la langue
 max_sequence_length = 41 if tokenizer_french else 20
@@ -45,14 +45,14 @@ def extract_text_from_wikipedia(url):
 
 # Fonction pour effectuer le résumé avec différents algorithmes en anglais
 def summarize_text_english(text, summarizer, num_sentences):
-    parser = PlaintextParser.from_string(text, SumyTokenizer("english"))
+    parser = PlaintextParser.from_string(text, Tokenizer("english"))
     summarizer = summarizer()
     summary = summarizer(parser.document, num_sentences)
     return " ".join(str(sentence) for sentence in summary)
 
 # Fonction pour effectuer le résumé avec différents algorithmes en français
 def summarize_text_french(text, summarizer, num_sentences):
-    parser = PlaintextParser.from_string(text, SumyTokenizer("french"))
+    parser = PlaintextParser.from_string(text, Tokenizer("french"))
     summarizer = summarizer()
     summary = summarizer(parser.document, num_sentences)
     return " ".join(str(sentence) for sentence in summary)
@@ -135,5 +135,4 @@ elif selected_tab == "Text Summarization":
         # Afficher le résumé
         st.subheader("Summary:")
         st.write(summary)
-
 
